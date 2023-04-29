@@ -1,0 +1,50 @@
+﻿@model List<ParseRSS.Models.News>
+
+<h1>News</h1>
+
+<form method="get" action="@Url.Action("GetNews")">
+    <div class="form-group">
+        <label for="keyword">Search:</label>
+        <input type="text" id="keyword" name="keyword" value="@ViewBag.Keyword" class="form-control" />
+    </div>
+    <button type="submit" class="btn btn-primary">Search</button>
+</form>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th><a href="@Url.Action("GetNews", new { sort_by = ViewBag.SortBy == "title" &&
+                ViewBag.SortOrder == "desc" ? "title" : "title", sort_order = ViewBag.SortBy == "title" &&
+                ViewBag.SortOrder == "desc" ? "asc" : "desc", keyword = ViewBag.Keyword })">Title
+            </a>
+            </th>
+
+            <th>Description</th>
+            <th><a href="@Url.Action("GetNews", new { sort_by = ViewBag.SortBy == "pub_date" &&
+                ViewBag.SortOrder == "desc" ? "pub_date" : "pub_date", sort_order = ViewBag.SortBy == "pub_date" &&
+                ViewBag.SortOrder == "desc" ? "asc" : "desc", keyword = ViewBag.Keyword })">Publication Date
+            </a>
+            </th>
+            <th>Publisher</th>
+            <th>News Group</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var newsItem in Model)
+        {
+            if (ViewBag.Keyword != null && !newsItem.Title?.Contains(ViewBag.Keyword, StringComparison.OrdinalIgnoreCase) &&
+            !newsItem.Description?.Contains(ViewBag.Keyword, StringComparison.OrdinalIgnoreCase))
+            {
+                continue;
+            }
+
+            <tr>
+                <td><a href="@newsItem.Link">@newsItem.Title</a></td>
+                <td>@newsItem.Description</td>
+                <td>@newsItem.PubDate.ToString("yyyy-MM-dd HH:mm:ss")</td>
+                <td>@newsItem.Publisher</td>
+                <td>@newsItem.NewsGroup</td>
+            </tr>
+        }
+    </tbody>
+</table>
